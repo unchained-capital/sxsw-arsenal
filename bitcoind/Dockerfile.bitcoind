@@ -1,0 +1,17 @@
+FROM alpine:3.8
+
+# Create a group and user
+RUN addgroup -S bitcoin \
+    && adduser -S bitcoin -G bitcoin
+
+RUN apk update \
+    && apk add bitcoin bitcoin-cli
+
+# Tell docker that all future commands should run as the bitcoin user
+USER bitcoin
+
+
+ENTRYPOINT ["bitcoind"]
+
+# launch with
+# docker run -it -v "$PWD/.bitcoind":/home/bitcoin/.bitcoind destrys/bitcoind 

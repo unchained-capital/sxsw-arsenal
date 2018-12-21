@@ -1,0 +1,12 @@
+version: '3'
+services:
+  
+  bitcoind:
+    container_name: bitcoind
+    image: "destrys/bitcoind"
+    ports:
+      - 18332:18332             # JSON-RPC
+      - 18333:18333             # Bitcoin
+    volumes:
+      - ./.bitcoin:/home/bitcoin/.bitcoin
+
