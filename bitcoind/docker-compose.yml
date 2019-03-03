@@ -5,8 +5,9 @@ services:
     container_name: bitcoind
     image: "destrys/bitcoind"
     ports:
-      - 18332:18332             # JSON-RPC
-      - 18333:18333             # Bitcoin
+      - 18443:18443             # Regtest RPC
+      - 18332:18332             # Testnet RPC
+      - 18333:18333             # Testnet Bitcoin network
     volumes:
       - ./.bitcoin:/home/bitcoin/.bitcoin
 

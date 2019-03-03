@@ -2,6 +2,7 @@
 
 data/
 
+.virtualenv/
 node-modules/
 
 regtest/
