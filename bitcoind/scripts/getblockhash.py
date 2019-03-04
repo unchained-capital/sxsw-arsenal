@@ -3,11 +3,13 @@ import bitcoin.rpc
 
 block_number = 5
 
-conf_file = "./.bitcoin/bitcoin.conf"
-
 bitcoin.SelectParams('regtest')
 
-proxy = bitcoin.rpc.Proxy(btc_conf_file=conf_file)
+# If using docker using the local conf file
+#proxy = bitcoin.rpc.Proxy(btc_conf_file="./.bitcoin/bitcoin.conf")
+
+# To let python-bitcoinlib use default conf location
+proxy = bitcoin.rpc.Proxy()
 
 blockhash = proxy.getblockhash(block_number)
 

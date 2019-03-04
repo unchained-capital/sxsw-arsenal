@@ -13,5 +13,5 @@ USER bitcoin
 
 ENTRYPOINT ["bitcoind"]
 
-# launch with
-# docker run -it -v "$PWD/.bitcoin":/home/bitcoin/.bitcoin destrys/bitcoind
+# for regtest, launch with
+# docker run -it -p 18443:18443 -v "$PWD/.bitcoin":/home/bitcoin/.bitcoin destrys/bitcoind
