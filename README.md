@@ -6,9 +6,20 @@ SXSW 2019 Workshop
 These instructions should work for mac and linux laptops. Windows users
 may need some additional steps.
 
+Schedule:
+
+1. 1hr bitcoin
+2. 1hr ethereum
+3. 1hr questions and breakouts
+
+
 **WORK IN PROGRESS**
 
 # Run a bitcoin node!
+
+**Disclaimer:** I'm not covering SegWit or Lighting in this workshop.
+You should definitely learn about both, but I think it's important to
+understand the basics first.
 
 ## Prerequs:
 
@@ -75,16 +86,164 @@ on your connection.
 ### The datadir directory
 
 The datadir directory is where bitcoind stores all wallet and chain data.
+After booting up bitcoind or bitcoin-qt, you should see a `regtest`
+directory in the datadir. If you started in testnet mode, you'd see a
+`testnet3` directory.
 
 
-
-### bitcoind interfaces
+## bitcoind interfaces
 
 Bitcoind has 3 interfaces:
 
 1. The CLI (not available with bitcoin-qt)
 2. JSON-RPC
-3. REST
+3. REST (usually turned off)
+
+### The CLI or console
+
+**For the rest of this README, I will use `bitcoin-cli` as the command to
+interact with `bitcoind`, use the correct command for your platform.**
+
+Enter `bitcoin-cli help` to see the many
+commands that bitcoind accepts. These are the same command accepted by the
+JSON-RPC interface. While you can look at websites for a list of the
+[rpc commands], it's best to go directly to bitcoind, this way you know you're
+up to date.
+
+For detailed info, give help the command you're interest in,
+i.e. `bitcoin-cli help generate`. Do that one now since that's
+what we're doing next.
+
+### Setup
+
+In regtest mode, we can create blocks as fast as we want, this is great
+for testing since bitcoin blocks are mined on average once per 10 minutes,
+even on testnet. Go ahead and execute this command:
+
+```
+bitcoin-cli generate 200
+```
+
+The output on the command line will be 200 block IDs, and if you
+look at the bitcoind log, you'll see a bunch of `AddToWallet` and `UpdateTip`
+log messages. Now that we have some blocks, let's see how much money we have
+
+```
+bitcoin-cli getbalance
+```
+
+You **should** see a bunch of BTC. That's becasue you've been awarded the
+block reward for all those blocks you just created. Woot!
+To see each individual 'recieved' transaction use this command:
+
+```
+bitcoin-cli listunspent
+```
+
+This displays all the unspent transaction outputs (UTXOs) that the bitcoin
+wallet is aware of. Let's clean this up a bit by sweeping a bunch of those
+UTXOs into one new address (and author our first real transaction). First we
+need an address from our wallet:
+
+```
+bitcoin-cli getnewaddress
+```
+
+This returns an new address for your wallet, copy it into the next command
+```
+bitcoin-cli sendtoaddress $(ADDRESS) 4999
+```
+
+This returns a transaction id (copy that somewhere) and the bitcoind
+log will have a ton of
+`CTxIn` and `CScriptWitness` calls. The transaction we just created is a beast
+with 100 inputs, one for each of the first 100 block rewards. Why didn't we
+use the reward from all 200 blocks we created? Because rewards are 'immature'
+for the first 100 blocks after mining, meaning you can't spend them. Just
+another little gotcha to be aware of.
+
+Now let's look at our cleaned up list of UTXOs:
+
+```
+bitcoin-cli listunspent
+```
+
+but wait, where is all our precious fake BTC? Don't worry, the transaction
+just hasn't been included in a block yet. If we were using testnet or mainnet,
+we'd now get to go get coffee and wait 10ish minutes. Since we're using regtest,
+we can just `generate` to confirm the transaction, but before you do, check
+out the help for `listunspent`. Look for `minconf`. Our transaction
+has zero confirmations (blocks since it was confirmed on-chain), so try
+setting `minconf` to `0` and see what you get. After you understand
+what you're seeing there (why are there two UTXOs?), go ahead and
+get that on-chain:
+
+```
+bitcoin-cli generate 1
+```
+
+listing your unspents should show 3 UTXOs now, 2 from the transaction, one
+from a block reward maturing. Let's look at some transactions now.
+Copy the `txid` from our transaction (notice two of the UTXOs have the same
+txid) and let's look at that transtion:
+
+```
+bitcoin-cli getrawtransaction $(TXID)
+```
+
+hopefully you can read hex and know bitcoin's [serialization] format so you
+can read that... ha. (but really, do this long enough and you'll be able to
+pull a decent amount of information out of that mess).
+Look at your unspents again and grab the `txid` for the block reward UTXO,
+it should have an amount of `50`. `getrawtransaction` for that `txid`, it
+will be much shorter.
+
+*Here's a take-away for this section*: bitcoin 'application development'
+is all about
+creating and parsing transactions. Those hex strings. Whether you're using a
+hardware wallet, a python library, or bitcoind, you will be either
+creating transactions, parsing transactions, or probably both. Get comfortable
+with transactions ASAP.
+
+Now that I may have scared you, let's look at what's in a transaction.
+
+```
+bitcoin-cli getrawtransaction $(TXID) true
+```
+
+setting `verbose` to true instructs bitcoind to parse that hex for us.
+(also check out `decoderawtransaction`, you can feed any transaction to
+be parsed, even something from mainnet. [blockcypher example])
+Here you'll see all the good stuff:
+
+1. Transaction inputs: `txid`, `vout` and `scriptSig`. The first two are
+specify the UTXO being spent, while the `scriptSig` is the 'unlocking' data
+that that authorizes the spend.
+
+2. Transaction outputs: `value`, `n`, `scriptPubKey`. `n` and the transaction id
+are what is used to specify this output, and `value` is how much BTC is locked
+by the `scriptPubKey`.
+
+Take a close look at `scriptPubKey`, since this is the 'encumbering script',
+or what bitcoin has for 'smart contracts'. This is the **code** that locks
+the bitcoin in the UTXO. The `scriptSig` in the spending transaction
+has to combine with the `scriptPubKey` to evaluate to `true`.
+
+For our transaction, we should see `OP_HASH160 hexbytes OP_EQUAL`. This
+is a [P2PKH] standarad transaction. Go to that link and look at the table
+to see how a P2PKH transaction is spent.
+
+Aside: a bitcoin address is the [base58check]
+encoding of the `hexbytes` used in the `scriptPubKey`.
+
+
+
+*Here's another take-away*: The blockchain is the source of **truth**.
+`Bitcoind` is you most trusted interface to the blockchain. As a bitcoin
+blockchain developer, you should have `bitcoind` nearby. Don't rely
+completely on block explorers or services.
+
+
 
 
 
@@ -146,3 +305,7 @@ saving all data surrounding your requests.
 [blockcypher]: https://www.blockcypher.com/dev/bitcoin/
 [blocksci]: https://github.com/citp/BlockSci
 [bitcoin-iterate]: https://github.com/rustyrussell/bitcoin-iterate
+[rpc commands]: https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list
+[serialization]: https://bitcoin.org/en/developer-reference#raw-transaction-format
+[blockcypher example]: https://api.blockcypher.com/v1/btc/main/txs/f854aebae95150b379cc1187d848d58225f3c4157fe992bcd166f58bd5063449?includeHex=true
+[p2pkh]: https://en.bitcoinwiki.org/wiki/Pay-to-Pubkey_Hash
