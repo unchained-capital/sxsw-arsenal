@@ -5,7 +5,7 @@ Destry Saul, 2019
 **WORK IN PROGRESS**
 
 Supporting materials for "The Arsenal of a Blockchain Developer"
-SXSW 2019 Workshop
+SXSW 2019 Workshop https://schedule.sxsw.com/2019/events/PP90095
 
 These instructions should work for mac and linux laptops. Windows users
 may need some additional steps.

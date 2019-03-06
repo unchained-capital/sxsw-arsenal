@@ -11,6 +11,6 @@ bitcoin.SelectParams('regtest')
 # To let python-bitcoinlib use default conf location
 proxy = bitcoin.rpc.Proxy()
 
-blockhash = proxy.getblockhash(block_number)
+blockhash = proxy.getblockhash(block_number).hex()
 
 print(blockhash)

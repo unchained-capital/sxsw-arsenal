@@ -181,7 +181,7 @@ Look at your unspents again and grab the `txid` for the block reward UTXO,
 it should have an amount of `50`. `getrawtransaction` for that `txid`, it
 will be much shorter.
 
-*Here's a take-away for this section*: bitcoin 'application development'
+**Here's a take-away for this section**: bitcoin 'application development'
 is all about
 creating and parsing transactions. Those hex strings. Whether you're using a
 hardware wallet, a python library, or bitcoind, you will be either
@@ -216,18 +216,13 @@ For our transaction, we should see `OP_HASH160 hexbytes OP_EQUAL`. This
 is a [P2PKH] standarad transaction. Go to that link and look at the table
 to see how a P2PKH transaction is spent.
 
-Aside: a bitcoin address is the [base58check]
+**Aside**: a bitcoin address is the [base58check]
 encoding of the `hexbytes` used in the `scriptPubKey`.
 
-
-
-*Here's another take-away*: The blockchain is the source of **truth**.
+**Here's another take-away**: The blockchain is the source of **truth**.
 `Bitcoind` is you most trusted interface to the blockchain. As a bitcoin
 blockchain developer, you should have `bitcoind` nearby. Don't rely
-completely on block explorers or services.
-
-
-
+completely on block explorers, libraries, or services.
 
 
 ## Bitcoin Libraries
@@ -240,9 +235,37 @@ all the functions you might need for key management and signing
 (i.e. no BIP32, BIP39, or RFC6979), but it does have good functions for
 parsing and forming transactions.
 
-### [bitcoinjs]
+I've included some small scripts that use python-bitcoinlib to directly
+communicate with bitcoind.
 
+```
+make
+source .virtualenv/bin/activate
+python scripts/getblockhash.py
+```
 
+Check out the scripts for some examples of what you can do.
+
+### additional useful python libraries
+
+[pybitcointools]: Vitalek's bitcoin library, it has been unmaintained, and
+even the best forks has stopped being maintained, but it has good BIP32 functions.
+It annoyingly installs as `bitcoin` as does python-bitcoinlib, so if you want to
+use both, you have to change one.
+
+[mnemonic]: BIP39 (wallet words) library from Trezor
+
+[ecdsa]: RFC6967 (deterministic signing), if you want to sign transactions with
+python and want them to match what a hardware wallet would produce.
+
+[python-trezor]: python interface for the Trezor hardware wallet
+
+### Javascript Libraries
+
+[bitcoinjs]:  If you're needing to manipulate bitcoin data in a browser,
+or node.js, check out bitcoinjs.
+
+[ledger-app-btc]: ledger's supported BTC app library
 
 ### [bcoin]
 
@@ -262,19 +285,50 @@ Block explorers are centralized software though, so you should not trust
 them in any way. Don't trust them to provide you accurate data, and assume they
 saving all data surrounding your requests.
 
-### [BlockCypher]
+Two block explorers I've used are  [BlockCypher] and [Blockchain.info]
 
-
+[webbtc] is an open source, and unmaintained block explorer, but still
+useful.
 
 ## Using bitcoind in an application
 
-`blocknotify` and `walletnotify` examples.
+So far, we've been focused on transactions and commands, but what about
+if you want to integrate bitcoind into your tech stack? Besides the json-rpc
+interface, bitcoind also has a notification system.
+Head to the bitcoin.conf file and look at 
+`blocknotify` and `walletnotify`. (`alertnotify` has been deprecated).
 
+I've commented out an `echo` command for both configs. If you uncomment those
+lines, restart bitcoind, and execute a transaction or generate a block,
+you should see that `echo` out in your log. Instead of `echo`, you could
+call a python script, pipe the data to a queue, etc. The only information
+passed is either the `blockhash` or the `txid`, but that's enough to do a
+lookup. For `walletnotify`, your node needs to be tracking the address in the
+received transaction, either because it is in the wallet, or because you
+tolk it to watch via `importaddress`
 
 ## Blockchain data
 
-[blocksci] and [bitcoin-iterate]
+You've heard that the blockchain is an open ledger, but accessing the block
+data is cumbersome. It's design for fast verifcation of a single transaction,
+not batch data analysis. Luckily, some folks have worked on tools to make
+accessing more data available.
 
+[blocksci] and [bitcoin-iterate] are two that we have used in our analysis.
+
+Another approach would be to take an open-source block explorer and set up
+your own databases that are easier to mine.
+
+## Next Steps:
+
+1. Run your node on testnet and mainnet
+2. Look at all the cool [nonstandard] scripts on-chain
+3. Try writing some custom scripts
+4. Check out OP_RETURN for storing data on-chain
+4. Get dirty and parse a transaction by hand ([my example])
+(and a classic from [Ken Shirriff])
+5. Hardware wallet integrations
+6. SegWit and [Lightning]
 
 [nodejs]: https://nodejs.org
 [docker]: https://www.docker.com/get-started
@@ -292,3 +346,16 @@ saving all data surrounding your requests.
 [serialization]: https://bitcoin.org/en/developer-reference#raw-transaction-format
 [blockcypher example]: https://api.blockcypher.com/v1/btc/main/txs/f854aebae95150b379cc1187d848d58225f3c4157fe992bcd166f58bd5063449?includeHex=true
 [p2pkh]: https://en.bitcoinwiki.org/wiki/Pay-to-Pubkey_Hash
+[base58check]: https://en.bitcoin.it/wiki/Base58Check_encoding
+[webbtc]: https://webbtc.com
+[nonstandard]: https://webbtc.com/p2sh_scripts/unknown
+[my example]: https://github.com/destrys/bitcoin_transaction_parsing/blob/master/notebooks/1_Intro_to_parsing.ipynb
+[pybitcointools]: https://github.com/vbuterin/pybitcointools
+[mnemonic]: https://github.com/trezor/python-mnemonic
+[edcsa]: https://github.com/warner/python-ecdsa
+[python-trezor]: https://github.com/trezor/python-trezor
+[ledger-app-btc]: https://github.com/LedgerHQ/ledger-app-btc
+[blockchain.info]: https://www.blockchain.com/api/blockchain_api
+[ken shirriff]: http://www.righto.com/2014/02/bitcoins-hard-way-using-raw-bitcoin.html
+[segwit]: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki
+[lightning]: https://lightning.network/
