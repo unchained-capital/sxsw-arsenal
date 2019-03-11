@@ -133,10 +133,12 @@ UTXOs into one new address (and author our first real transaction). First we
 need an address from our wallet:
 
 ```
-bitcoin-cli getnewaddress
+bitcoin-cli getnewaddress "" legacy
 ```
 
 This returns an new address for your wallet, copy it into the next command
+(we'll discuss why we're using a legacy address later)
+
 ```
 bitcoin-cli sendtoaddress $(ADDRESS) 4999
 ```
@@ -217,8 +219,8 @@ the bitcoin in the UTXO. The `scriptSig` in the spending transaction
 has to combine with the `scriptPubKey` to evaluate to `true`.
 
 For our transaction, we should see `OP_HASH160 hexbytes OP_EQUAL`. This
-is a [P2PKH] standarad transaction. Go to that link and look at the table
-to see how a P2PKH transaction is spent.
+is a [P2PKH] standard transaction. Go to that link and look at the table
+to see how a P2SH transaction is spent.
 
 **Aside**: a bitcoin address is the [base58check]
 encoding of the `hexbytes` used in the `scriptPubKey`.
