@@ -40,7 +40,7 @@ docker-compose exec bitcoind bitcoin-cli help
 ```
 cd bitcoind
 docker build -f Dockerfile.bitcoind -t destrys/bitcoind .
-docker run -it --name bitcoind -p 18443:18443 -v "$PWD/.bitcoind":/home/bitcoin/.bitcoind destrys/bitcoind
+docker run -it --name bitcoind -p 18443:18443 -v "$PWD/.bitcoin":/home/bitcoin/.bitcoin destrys/bitcoind
 docker exec bitcoind bitcoin-cli help
 ```
 
@@ -86,6 +86,10 @@ Bitcoind has 3 interfaces:
 
 **For the rest of this README, I will use `bitcoin-cli` as the command to
 interact with `bitcoind`, use the correct command for your platform.**
+
+For docker, use `alias bitcoin-cli='docker exec bitcoind bitcoin-cli'`.
+
+For docker-compose, use `alias bitcoin-cli='docker-compose exec bitcoin bitcoin-cli'`.
 
 Enter `bitcoin-cli help` to see the many
 commands that bitcoind accepts. These are the same command accepted by the
@@ -239,10 +243,16 @@ I've included some small scripts that use python-bitcoinlib to directly
 communicate with bitcoind.
 
 ```
-make
-source .virtualenv/bin/activate
+python3 -m venv .virtualenv
+source .virtualenv/bin/activate 
+pip install -r requirements.txt
 python scripts/getblockhash.py
 ```
+
+You may need to use `python` instead of `python3` depending on your python
+installation. For Windows, you probably need
+to use `.virtualenv\Scripts\activate`
+to use the virtualenv.
 
 Check out the scripts for some examples of what you can do.
 

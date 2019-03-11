@@ -3,7 +3,8 @@
 data/
 
 .virtualenv/
-node-modules/
+node_modules/
+build/
 
 regtest/
 testnet/
