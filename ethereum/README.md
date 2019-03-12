@@ -103,11 +103,14 @@ truffle migrate
 
 The artifact file gets updated with the address of the deployed contract.
 
+**NOTE:** If you restart Ganache, you'll probably need to run this command
+before you use the dApp UI again: `truffle migrate --reset`. This forgets
+about previous deployments and starts fresh.
+
 
 ### Run the dApp
 
 This example comes with a bare bones web app that you can run with this command:
-
 
 ```
 npm run dev
@@ -130,6 +133,29 @@ ways that this could be improved.
 5. No other information about the dogs.
 
 Let's discuss ways that these issues could be addressed.
+
+## Deployment Options
+
+While it's fine to host your dApp on a server, part of the magic of dApps
+is that it can (should?) function without your direct involvement.
+As an example, I've included a browserified version of the dApp.
+Because the contract address gets hard coded into the bundled js file,
+you need to call browserify after calling your migration:
+
+```
+truffle migrate
+./node_modules/browserify/bin/cmd.js src/js/flatapp.js > src/js/bundled.js
+```
+
+the flattened version of the dApp is at `src/flatindex.html`. You *should*
+be able to open that file with your browser and interact with the dApp.
+MetaMask doesn't work with files, it's restricted to only work over https,
+so the app defaults back to Ganache, but if you click 'adopt', you'll see
+a transaction go through.
+
+If you were to publish this to github pages, or your own site,
+you *should* be able to even use MetaMask.
+
 
 ## Additional Resources
 
