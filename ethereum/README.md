@@ -80,7 +80,8 @@ be trying your level best to write bug-free code.
 Truffle's most important feature (in my humble opinion) is it's testing rig.
 Ganache allows you to run tests fast and reset the state of the test blockchain.
 
-The tests are stored in `test`. Go check them out.
+The tests are stored in `test`. Go check them out. Test can either
+be written in solidity or javascript. 
 
 Then run the tests (make sure Ganache is running first):
 
@@ -133,7 +134,7 @@ Let's discuss ways that these issues could be addressed.
 ## Additional Resources
 
 1. [Remix]
-
+1. [The Ethernaut]
 
 
 ## What's next:
@@ -143,6 +144,8 @@ Let's discuss ways that these issues could be addressed.
 2. [IPFS]
 3. Try testing my [multisig dApp]
 4. Try my [ecrecover demos]
+
+If you have an O'Reilly Safari subscription, check out my [upcoming online class]
 
 
 [node.js]: https://nodejs.org/en/
@@ -162,3 +165,5 @@ Let's discuss ways that these issues could be addressed.
 [geth]: https://github.com/ethereum/go-ethereum
 [erc20]: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
 [erc721]: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
+[upcoming online class]: https://learning.oreilly.com/live-training/courses/an-introduction-to-ethereum-dapps/0636920254539/
+[the ethernaut]: https://ethernaut.zeppelin.solutions/
