@@ -220,7 +220,7 @@ has to combine with the `scriptPubKey` to evaluate to `true`.
 
 For our transaction, we should see `OP_HASH160 hexbytes OP_EQUAL`. This
 is a [P2PKH] standard transaction. Go to that link and look at the table
-to see how a P2SH transaction is spent.
+to see how a P2PKH transaction is spent [another P2PKH] example .
 
 **Aside**: a bitcoin address is the [base58check]
 encoding of the `hexbytes` used in the `scriptPubKey`.
@@ -371,3 +371,4 @@ your own databases that are easier to mine.
 [ken shirriff]: http://www.righto.com/2014/02/bitcoins-hard-way-using-raw-bitcoin.html
 [segwit]: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki
 [lightning]: https://lightning.network/
+[another p2pkh]: http://learnmeabitcoin.com/glossary/p2pkh
