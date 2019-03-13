@@ -167,10 +167,11 @@ you *should* be able to even use MetaMask.
 ## What's next:
 
 1. Install [Parity] or [Geth] and run a testnet node
-2. Check out the [ERC20] or [ERC721] specs.
-2. [IPFS]
-3. Try testing my [multisig dApp]
-4. Try my [ecrecover demos]
+2. Write JS versions of the contract tests (trickier than you might think)
+3. Check out the [ERC20] or [ERC721] specs.
+4. [IPFS]
+5. Try testing my [multisig dApp]
+6. Try my [ecrecover demos]
 
 If you have an O'Reilly Safari subscription, check out my [upcoming online class]
 
