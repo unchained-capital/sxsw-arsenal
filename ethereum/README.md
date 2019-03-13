@@ -30,7 +30,8 @@ setup a password, and select 'custom rpc', setting the rpc port to 7545.
 **Bug tip:** If you have trouble selecting 'custom rpc' (A recurring bug), you can
 use the 'Localhost 8545' option, but then you need to change the port
 Ganache is using (under settings) and change the port in `truffle-config.js`
-to 8545.
+to 8545. You'll also need to change the port in `truffle-congif.js` and
+`src/js/flatapp.js`.
 
 **Another Bug Tip:** When using Ganache, MetaMask can get confused
 since you can change the blockchain. If you see an error about an incorrect
